@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bem-vindo</h1>
+
+    <form method="post" action="/HomeController/teste">
+        <input type="text" name="nome" id="nome">
+        <button type="submit">Enviar</button>
+    </form>
+
+    <p>@ViewBag.UserName</p>
+
+    
+</div>

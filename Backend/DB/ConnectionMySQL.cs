@@ -8,5 +8,6 @@ namespace Backend.DB {
         public DbSet<VendasViewModel> Vendas { get; set; }
         public DbSet<VendasItemViewModel> Vendas_Item { get; set;}
         public DbSet<CategoriaProdutosViewModel> Categoria_Produtos { get; set; }
+        public DbSet<ClientesViewModel> Clientes { get; set; }
     }
 }

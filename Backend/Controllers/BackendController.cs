@@ -110,6 +110,83 @@ namespace Backend.Controllers {
             return Ok(new { Token = token, Usuario = user }); // retornar o token e o usuário
         }
         #endregion
+        #region Clientes 
+        [HttpGet("GetClients")]
+        public async Task<ActionResult<IEnumerable<ClientesViewModel>>> GetClients() {
+            return await _connection.Clientes.ToListAsync();
+        }
+
+        [HttpGet("GetClient/{id}")]
+        public async Task<ActionResult<ClientesViewModel>> GetClient(string id) {
+            var client = await _connection.Clientes.FindAsync(id);
+
+            if(client == null) {
+                return NotFound("Cliente não encontrado");
+            }
+
+            return Ok(client);
+        }
+
+        [HttpPost("PostClient")]
+        public async Task<ActionResult<ClientesViewModel>> PostClient(ClientesViewModel client) {
+            _connection.Clientes.Add(client);
+            await _connection.SaveChangesAsync();
+            return Ok(client);
+        }
+
+        [HttpDelete("DeleteClient/{id}")]
+        public async Task<ActionResult<ClientesViewModel>> DeleteClient(int id) {
+            var client = await _connection.Clientes.FindAsync(id);
+
+            if(client == null) {
+                return NotFound("Cliente não encontrado");
+            }
+
+            _connection.Clientes.Remove(client);
+            await _connection.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPut("PutClient/{id}")]
+        public async Task<ActionResult<ClientesViewModel>> PutClient(int id,ClientesViewModel client) {
+            var findClient = await _connection.Clientes.FindAsync(id);
+
+            if(findClient == null) {
+                return NotFound("Cliente não encontrado");
+            }
+
+            string cliente = client.Cliente;
+            string email = client.Email;
+            string telefone = client.Telefone;
+            string endereco = client.Endereco;
+            DateOnly date = client.DataDeNascimento;
+            char sexo = client.Sexo;
+
+            if (cliente == "") cliente = findClient.Cliente;
+            if (email == "") email = findClient.Email;
+            if (telefone == "") telefone = findClient.Telefone;
+            if (endereco == "") endereco = findClient.Endereco;
+            if (date == null) date = findClient.DataDeNascimento;
+            if (sexo.ToString() == "") sexo = findClient.Sexo;
+
+            findClient.Cliente = cliente;
+            findClient.Email = email;
+            findClient.Telefone = telefone;
+            findClient.Endereco = endereco;
+            findClient.DataDeNascimento = date;
+            findClient.Sexo = sexo;
+
+            _connection.Clientes.Entry(findClient).State = EntityState.Modified;
+
+            try {
+                await _connection.SaveChangesAsync();
+                return Ok(client);
+            }catch(DbUpdateConcurrencyException db) {
+                return BadRequest(db);
+            }
+
+        }
+        #endregion
         #region Produtos
 
         [HttpPost("postProd")]
